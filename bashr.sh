@@ -4,9 +4,11 @@
 # Setting destination for each repo to create
 #
 
-. /usr/lib/bash/colorize.sh
-. /usr/lib/bash/spinner.sh
-. /usr/lib/bash/query.sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. $DIR/colorize.sh
+. $DIR/spinner.sh
+. $DIR/query.sh
 
 export BASHR_LEVEL=1;
 
