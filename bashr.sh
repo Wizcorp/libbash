@@ -90,7 +90,7 @@ setup(){
     errorMsg="${@:2:$(($#-2))}";
     cmdStr="";
     cmdIncr=0;
-    cmdId=$(uuidgen);
+    cmdId=$(uuid);
 
     #
     # Escaping of values which contain spaces
