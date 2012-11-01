@@ -83,6 +83,12 @@ echoQuestionHide(){
     queryStared $(echo "？ $@" | magenta | bold)
 }
 
+echoPadded() {
+    padding=$(( $1 - ${#2} ));
+    echo -n $2;
+    for i in $(seq 1 $padding); do echo -n " "; done
+}
+
 setup(){
 
     label="$1"
@@ -90,7 +96,7 @@ setup(){
     errorMsg="${@:2:$(($#-2))}";
     cmdStr="";
     cmdIncr=0;
-    cmdId=$(uuid);
+    cmdId="$(cat /dev/urandom | tr -cd '[:alnum:]' | head -c 5)-$(date +%s)";
 
     #
     # Escaping of values which contain spaces
@@ -156,7 +162,7 @@ run(){
     cmd=("${@:2:$(($#-1))}");
     cmdStr="";
     cmdIncr=0;
-    cmdId=$(uuidgen);
+    cmdId="$(cat /dev/urandom | tr -cd '[:alnum:]' | head -c 5)-$(date +%s)";
 
     #
     # Escaping of values which contain spaces
