@@ -65,7 +65,7 @@ echoWarning(){
 
 echoError(){
     echoSpacing;
-    echo "✘ $@" | red | bold
+    echo "✘ $@" | red | bold 1>&2
 }
 
 echoOk(){
@@ -140,7 +140,8 @@ setup(){
         echo "";
         exit;
     elif [ $cmdRet -ne 0 ]; then
-        echo -e "✘\n -- $(cat $errorPipe) (error code: $?)" | red | bold;
+        echo -e "✘" | red | bold;
+        echo "-- $(cat $errorPipe) (error code: $?)" | red | bold 1>&2;
         exit;
     else
         echo "✔" | green | bold;
