@@ -16,7 +16,7 @@ spinner()
 
     printf "${CSI}?25l"
 
-    (while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+    (while [ "$(ps ax | awk '{print $1}' | grep $pid)" != "" ]; do
 
         local temp=${spinstr#?}
         printf " [%c]  " "$spinstr";
