@@ -19,6 +19,7 @@ fi
 # Include required libraries
 . ${scriptRoot}/bashr.sh
 
+
 ##
 # Takes in a space separated list of command which should be expected. If anyone
 # one of the listed commands are found to not exist, an error will thrown for
@@ -56,6 +57,45 @@ function EnsureCommandsAvailable() {
     # Exit if any commands were not found
     if $errors
     then
-        exit 1;
+        return 1;
     fi
+}
+
+
+##
+# Function which takes in a list of arguments and allowed arguments and then
+# determines if there are any foreign arguments. If none are found it will then
+# store the argument value pairs into variables with argument label and values.
+#
+# Usage: ParseArguments <allowed> <arguments>
+#
+# Arguments:
+#     allowed: space separated list of allowed arguments. Anything not in this
+#              list will be considered foreign and will cause the function to
+#              exit with error code 1.
+#
+#   arguments: list of arguments passed to your application (usually will be $@)
+#              which will be tested against allowed values passed. Also these
+#              will then be pulled a part and stored into actual variables.
+##
+function ParseArguments() {
+    # Define required variables
+    allow="$1";
+    arguments="$2";
+
+    # Iterate through arguments
+    for argument in ${arguments}
+    do
+        label="$(echo $argument | awk -F '=' '{print $1}' | sed 's/^--//')";
+        value="$(echo $argument | awk -F '=' '{print $2}')";
+
+        if [ "$(echo ${allow} | grep ${label})" = "" ]
+        then
+            echoError "Unrecognized argument --${label}";
+            echoError "Check --help for further usage information";
+            return 1;
+        else
+            eval "export ${label}='${value}'";
+        fi
+    done
 }
