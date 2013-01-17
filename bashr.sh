@@ -141,8 +141,8 @@ setup(){
         exit;
     elif [ $cmdRet -ne 0 ]; then
         echo -e "✘" | red | bold;
-        echo "-- $(cat $errorPipe) (error code: $?)" | red | bold 1>&2;
-        exit;
+        echo "-- $(cat $errorPipe) (error code: $cmdRet)" | red | bold 1>&2;
+        exit $cmdRet;
     else
         echo "✔" | green | bold;
     fi
