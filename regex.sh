@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ##
-# title           :regex.sh
-# description     :This script provides helper functions for
-#                  creating or manipulating regular expressions.
-# author          :Almir Kadric
-# created on      :2012-11-22
-# version         :0.1
+# title           : regex.sh
+# description     : This script provides helper functions for
+#                   creating or manipulating regular expressions.
+# author          : Almir Kadric
+# created on      : 2012-11-22
+# version         : 0.1
 ##
 
 
