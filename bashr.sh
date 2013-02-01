@@ -96,7 +96,7 @@ setup(){
     errorMsg="${@:2:$(($#-2))}";
     cmdStr="";
     cmdIncr=0;
-    cmdId="$(cat /dev/urandom | tr -cd '[:alnum:]' | head -c 5)-$(date +%s)";
+    cmdId="$RANDOM-$(date +%s)";
 
     #
     # Escaping of values which contain spaces
@@ -163,7 +163,7 @@ run(){
     cmd=("${@:2:$(($#-1))}");
     cmdStr="";
     cmdIncr=0;
-    cmdId="$(cat /dev/urandom | tr -cd '[:alnum:]' | head -c 5)-$(date +%s)";
+    cmdId="$RANDOM-$(date +%s)";
 
     #
     # Escaping of values which contain spaces
