@@ -12,12 +12,14 @@ query(){
         done
     else
         while test $# -gt 0; do
-            echo -n $1;
-            shift
+            if [ "$1" != "" ]; then
+                echo -n " $1";
+                shift
+            fi
         done
     fi
 
-    echo -n " : "
+    echo -n ": "
 
     read ret;
 
@@ -36,11 +38,11 @@ queryStared(){
         done
     else
         while test $# -gt 0; do
-            echo -n $1;
+            echo -n " $1";
             shift
         done
     fi
-    echo -n " : "
+    echo -n ": "
 
     prompt="";
     while IFS= read -p "$prompt" -r -s -n 1 char
