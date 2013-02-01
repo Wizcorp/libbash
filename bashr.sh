@@ -74,13 +74,17 @@ echoOk(){
 }
 
 echoQuestion(){
+    retStore=$1;
+    shift;
     echoSpacing;
-    query $(echo "？ $@" | magenta | bold)
+    query $retStore $(echo "？ $@" | magenta | bold)
 }
 
 echoQuestionHide(){
     echoSpacing;
-    queryStared $(echo "？ $@" | magenta | bold)
+    retStore=$1;
+    shift;
+    queryStared $retStore $(echo "？ $@" | magenta | bold)
 }
 
 echoPadded() {

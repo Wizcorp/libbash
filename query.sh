@@ -1,37 +1,45 @@
 #!/bin/bash
 
 query(){
-    local ret
+
+    local resultvar=$1;
+    local ret;
+    shift;
 
     if [ "$1" == "" ]; then
         while read data; do
             echo -n $data
         done
     else
-        for data in "$@"; do
-            echo -n $data;
+        while test $# -gt 0; do
+            echo -n $1;
+            shift
         done
     fi
 
     echo -n " : "
 
     read ret;
-    echo $ret;
+
+    eval $resultvar="'$ret'"
 }
 
 queryStared(){
-    local ret
+
+    local resultvar=$1;
+    local ret;
+    shift;
 
     if [ "$1" == "" ]; then
         while read data; do
             echo -n $data
         done
     else
-        for data in "$@"; do
-            echo -n $data;
+        while test $# -gt 0; do
+            echo -n $1;
+            shift
         done
     fi
-
     echo -n " : "
 
     prompt="";
@@ -57,5 +65,6 @@ queryStared(){
         ret+="$char"
     done
 
-    echo $ret;
+    echo "";
+    eval $resultvar="'$ret'"
 }
