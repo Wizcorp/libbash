@@ -11,7 +11,7 @@
 
 # Get script root path, symlink resistant
 scriptRoot=$(cd "$(dirname ${BASH_SOURCE})" && pwd);
-if [ -h ${BASH_SOURCE} 
+if [ -h ${BASH_SOURCE} ] 
 then
     scriptRoot=$(cd "$(dirname $(readlink ${BASH_SOURCE}))" && pwd);
 fi
