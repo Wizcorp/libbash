@@ -24,16 +24,30 @@ fi
 # Takes in a space separated list of command which should be expected. If anyone
 # one of the listed commands are found to not exist, an error will thrown for
 # that command. And once all commands are processed, if any were found missing
-# function will exit with status code of 1.
+# function will exit with status code of 1 and return those missing command names
+# in a predefined array called notFoundCommands.
 # 
 # Commands can be scripts, system binaries etc. found in $PATH or functions
 #
-# Usage: EnsureCommandsAvailable <commands>
+# Usage: EnsureCommandsAvailable command1 [command2] [...]
 #
 # Arguments:
 #     commands: space separated list of commands which to test for
+#
+# Environment Variables:
+#   notFoundCommands: Array list of commands which could not be found. Must be
+#                     defined before using this function to gain access to return
+#                     value.
+#
+#       SILENT_ERROR: (BOOLEAN) Whether or not an error should be written to
+#                     STDERR when a command is not found. This is useful if you
+#                     want to display a custom error message, or handle it in a
+#                     different fashion.
 ##
 function EnsureCommandsAvailable() {
+    # Define returned environment variables
+    export notFoundCommands=();
+
     # Define required variables
     commands="$@";
     errors=false;
@@ -42,14 +56,19 @@ function EnsureCommandsAvailable() {
     for command in ${commands}
     do
         # Check command type
-        result=$(type $command);
+        type $command 2>/dev/null 1>/dev/null;
         status=$?;
 
         # Check if type casting of command was successful
         if [ $status -ne 0 ]
         then
-            # Output error if command was not found
-            echoError "Could not find command ${command}";
+            # If not silent, output error if command was not found
+            if [ "$SILENT_ERROR" = "" ] || ! $SILENT_ERROR
+            then
+                echoError "Could not find command ${command}";
+            fi
+
+            notFoundCommands+=(${command});
             errors=true;
         fi
     done
@@ -70,32 +89,57 @@ function EnsureCommandsAvailable() {
 # Usage: ParseArguments <allowed> <arguments>
 #
 # Arguments:
-#     allowed: space separated list of allowed arguments. Anything not in this
-#              list will be considered foreign and will cause the function to
-#              exit with error code 1.
+#     allowed: space or comma separated list of allowed arguments. Anything not
+#              in this list will be considered foreign and will cause the function
+#              to exit with error code 1.
 #
 #   arguments: list of arguments passed to your application (usually will be $@)
 #              which will be tested against allowed values passed. Also these
 #              will then be pulled a part and stored into actual variables.
+#
+# Environment Variables:
+#   invalidArguments: Array list of arguments which were invalid. Must be defined
+#                     before using this function to gain access to return value.
+#
+#       SILENT_ERROR: (BOOLEAN) Whether or not an error should be written to
+#                     STDERR when a command is not found. This is useful if you
+#                     want to display a custom error message, or handle it in a
+#                     different fashion.
 ##
 function ParseArguments() {
+    # Define returned environment variables
+    invalidArguments=();
+
     # Define required variables
     allow="$1";
-    arguments="$2";
+    errors=false;
 
-    # Iterate through arguments
-    for argument in ${arguments}
+    # Remove the first element from arguments
+    shift 1
+
+    # Iterate through remaining arguments
+    for argument in $@
     do
         label="$(echo $argument | awk -F '=' '{print $1}' | sed 's/^--//')";
         value="$(echo $argument | awk -F '=' '{print $2}')";
 
-        if [ "$(echo ${allow} | grep ${label})" = "" ]
+        if [ "$(echo ${allow} | egrep "(^|[,\ ])${label}([,\ ]|$)")" = "" ]
         then
-            echoError "Unrecognized argument --${label}";
-            echoError "Check --help for further usage information";
-            return 1;
+            if [ "$SILENT_ERROR" = "" ] || ! $SILENT_ERROR
+            then
+                echoError "Unrecognized argument --${label}";
+            fi
+
+            invalidArguments+=(${label});
+            errors=true;
         else
             eval "export ${label}='${value}'";
         fi
     done
+
+    # Exit if any commands were not found
+    if $errors
+    then
+        return 1;
+    fi
 }
