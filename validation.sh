@@ -35,9 +35,7 @@ fi
 #     commands: space separated list of commands which to test for
 #
 # Environment Variables:
-#   notFoundCommands: Array list of commands which could not be found. Must be
-#                     defined before using this function to gain access to return
-#                     value.
+#   notFoundCommands: Array list of commands which could not be found.
 #
 #       SILENT_ERROR: (BOOLEAN) Whether or not an error should be written to
 #                     STDERR when a command is not found. This is useful if you
@@ -46,7 +44,7 @@ fi
 ##
 function EnsureCommandsAvailable() {
     # Define returned environment variables
-    export notFoundCommands=();
+    eval notFoundCommands=();
 
     # Define required variables
     commands="$@";
@@ -68,7 +66,7 @@ function EnsureCommandsAvailable() {
                 echoError "Could not find command ${command}";
             fi
 
-            notFoundCommands+=(${command});
+            eval notFoundCommands+=(${command});
             errors=true;
         fi
     done
@@ -98,8 +96,7 @@ function EnsureCommandsAvailable() {
 #              will then be pulled a part and stored into actual variables.
 #
 # Environment Variables:
-#   invalidArguments: Array list of arguments which were invalid. Must be defined
-#                     before using this function to gain access to return value.
+#   invalidArguments: Array list of arguments which were invalid.
 #
 #       SILENT_ERROR: (BOOLEAN) Whether or not an error should be written to
 #                     STDERR when a command is not found. This is useful if you
@@ -108,7 +105,7 @@ function EnsureCommandsAvailable() {
 ##
 function ParseArguments() {
     # Define returned environment variables
-    invalidArguments=();
+    eval invalidArguments=();
 
     # Define required variables
     allow="$1";
@@ -130,7 +127,7 @@ function ParseArguments() {
                 echoError "Unrecognized argument --${label}";
             fi
 
-            invalidArguments+=(${label});
+            eval invalidArguments+=(${label});
             errors=true;
         else
             eval "export ${label}='${value}'";
