@@ -74,13 +74,17 @@ echoOk(){
 }
 
 echoQuestion(){
+    retStore=$1;
+    shift;
     echoSpacing;
-    query $(echo "？ $@" | magenta | bold)
+    query $retStore $(echo "？ $@" | magenta | bold)
 }
 
 echoQuestionHide(){
     echoSpacing;
-    queryStared $(echo "？ $@" | magenta | bold)
+    retStore=$1;
+    shift;
+    queryStared $retStore $(echo "？ $@" | magenta | bold)
 }
 
 echoPadded() {
@@ -96,7 +100,7 @@ setup(){
     errorMsg="${@:2:$(($#-2))}";
     cmdStr="";
     cmdIncr=0;
-    cmdId="$(cat /dev/urandom | tr -cd '[:alnum:]' | head -c 5)-$(date +%s)";
+    cmdId="$RANDOM-$(date +%s)";
 
     #
     # Escaping of values which contain spaces
@@ -138,7 +142,7 @@ setup(){
     if [ $spinRet -ne 0 ]; then
         echo -e "Aborted" | yellow | bold;
         echo "";
-        exit;
+        exit 1;
     elif [ $cmdRet -ne 0 ]; then
         echo -e "✘" | red | bold;
         echo "-- $(cat $errorPipe) (error code: $cmdRet)" | red | bold 1>&2;
@@ -163,7 +167,7 @@ run(){
     cmd=("${@:2:$(($#-1))}");
     cmdStr="";
     cmdIncr=0;
-    cmdId="$(cat /dev/urandom | tr -cd '[:alnum:]' | head -c 5)-$(date +%s)";
+    cmdId="$RANDOM-$(date +%s)";
 
     #
     # Escaping of values which contain spaces
