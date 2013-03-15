@@ -9,14 +9,14 @@ spinner()
     local spinstr='|/-\'
 
     if [ "$delay" == "" ]; then
-        delay=0.02
+        delay=0.1
     fi
 
     trap spinner_sorry INT
 
     printf "${CSI}?25l"
 
-    (while ps ao pid | grep -qs "^${pid}$"; do
+    (while kill -0 ${pid} 2> /dev/null; do
 
         local temp=${spinstr#?}
         printf " [%c]  " "$spinstr";
