@@ -94,7 +94,7 @@ net(){
         cat - <&6 &
         catPid=$!;
 
-        trap "kill ${catPid}" SIGINT SIGTERM;
+        trap "kill ${catPid} 2> /dev/null" SIGINT SIGTERM;
 
         while read line; do
             echo -e "${line}" >&6;
