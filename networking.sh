@@ -62,19 +62,19 @@ http(){
     if [ -z "${HEADERS}" ]; then
         SAVE_HEADERS=${HEADERS};
         HEADERS="\r\n";
-        HEADERS_STR="${HEADERS[*]}"
+        HEADERS_STR="${HEADERS[*]}\r\n"
         HEADERS=${SAVE_HEADERS};
     fi
 
-    echo -en "${ACTION} ${URL} HTTP/1.0\r\n${HEADERS_STR}\r\n" | net tcp ${HOST} ${PORT};
+    echo -en "${ACTION} ${URL} HTTP/1.0\r\nHost: ${HOST}\r\n${HEADERS_STR}" | net tcp ${HOST} ${PORT};
 }
 
 tcp(){
-    net tcp ${@} <&1;
+    cat - | net tcp ${@};
 }
 
 udp(){
-    net udp ${@} <&1;
+    cat - | net udp ${@};
 }
 
 net(){
@@ -90,15 +90,26 @@ net(){
 
     RES=$?;
 
-    if [ "${4}" == "" -o "$(echo ${4} | grep "^-")" != "" ]; then
-        # Send this pipe to backgound. Not sure if this works...
-        cat - >&6 &
+    if [ "${4}" == "" ] || echo ${4} | grep "^-"; then
+        cat - <&6 &
+        catPid=$!;
+
+        trap "kill ${catPid}" SIGINT SIGTERM;
+
+        while read line; do
+            echo -e "${line}" >&6;
+        done;
     else
         shift 3
         echo -e "$@" >&6;
+        cat - <&6;
     fi
 
-    cat <&6;
+    if [ "${catPid}" != "" ]; then
+        while kill -0 ${catPid} 2> /dev/null; do
+            sleep 1;
+        done
+    fi
 
     exec 6>&-;
     exec 6<&-;
