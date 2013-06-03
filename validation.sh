@@ -61,7 +61,7 @@ function EnsureCommandsAvailable() {
         if [ $status -ne 0 ]
         then
             # If not silent, output error if command was not found
-            if [ "$SILENT_ERROR" = "" ] || ! $SILENT_ERROR
+            if [ "${SILENT_ERROR:-}" = "" ] || ! $SILENT_ERROR
             then
                 echoError "Could not find command ${command}";
             fi
