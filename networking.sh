@@ -106,9 +106,7 @@ net(){
     fi
 
     if [ "${catPid}" != "" ]; then
-        while kill -0 ${catPid} 2> /dev/null; do
-            sleep 1;
-        done
+        wait ${catPid};
     fi
 
     exec 6>&-;
