@@ -108,7 +108,7 @@ function ParseArguments() {
     eval invalidArguments=();
 
     # Define required variables
-    allow="$1";
+    allow="${1:-}";
     errors=false;
 
     # Remove the first element from arguments

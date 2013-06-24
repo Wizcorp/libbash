@@ -4,8 +4,8 @@ spinner()
     local ESC=$'\e'
     local CSI="$ESC["
 
-    local pid=$1
-    local delay=$2
+    local pid=${1:-}
+    local delay=${2:-}
     local spinstr='|/-\'
 
     if [ "$delay" == "" ]; then

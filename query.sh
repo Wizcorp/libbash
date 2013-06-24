@@ -2,18 +2,18 @@
 
 query(){
 
-    local resultvar=$1;
+    local resultvar=${1:-};
     local ret;
     shift;
 
-    if [ "$1" == "" ]; then
+    if [ "${1:-}" == "" ]; then
         while read data; do
             echo -n $data
         done
     else
         while test $# -gt 0; do
-            if [ "$1" != "" ]; then
-                echo -n " $1";
+            if [ "${1:-}" != "" ]; then
+                echo -n " ${1:-}";
                 shift
             fi
         done
@@ -28,17 +28,17 @@ query(){
 
 queryStared(){
 
-    local resultvar=$1;
+    local resultvar=${1:-};
     local ret;
     shift;
 
-    if [ "$1" == "" ]; then
+    if [ "${1:-}" == "" ]; then
         while read data; do
             echo -n $data
         done
     else
         while test $# -gt 0; do
-            echo -n " $1";
+            echo -n " ${1:-}";
             shift
         done
     fi
