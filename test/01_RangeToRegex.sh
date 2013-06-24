@@ -26,9 +26,9 @@ source ../regex.sh
 ##
 function TestRangeToRegex() {
     # Get arguments
-    range=$1;
-    testFrom=$2;
-    testTo=$3;
+    range=${1:-};
+    testFrom=${2:-};
+    testTo=${3:-};
 
     # separate from and to in case piece is a range
     from=$(echo ${range} | cut -d '-' -f 1);
@@ -50,7 +50,7 @@ function TestRangeToRegex() {
     fi
 
     # Get regex
-    regex=$(RangeToRegex $1);
+    regex=$(RangeToRegex ${1:-});
 
     # Begin testing
     for i in $(seq $from $to)
@@ -91,12 +91,12 @@ function TestRangeToRegex() {
 ##
 function RangeToRegexUnitTest() {
     # Get ranges from arguments
-    if [ "$1" = "" ]
+    if [ "${1:-}" = "" ]
     then
         echo "No regex supplied. Will use default."
         ranges="2-8,2-15,9-15,2-75,8-85,8-95,8-135,24-155,6-2345,45-3455,158-2766"
     else
-        ranges=$1
+        ranges=${1:-}
     fi
 
 

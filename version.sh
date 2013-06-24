@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 version_compare () {
-    if [[ $1 == $2 ]]
+    if [[ ${1:-} == ${2:-} ]]
     then
         return 0
     fi
     local IFS=.
-    local i ver1=($1) ver2=($2)
+    local i ver1=(${1:-}) ver2=(${2:-})
     # fill empty fields in ver1 with zeros
     for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
     do
@@ -31,16 +31,16 @@ version_compare () {
 }
 
 test_version_compare () {
-    vercomp $1 $2
+    vercomp ${1:-} ${2:-}
     case $? in
         0) op='=';;
         1) op='>';;
         2) op='<';;
     esac
-    if [[ $op != $3 ]]
+    if [[ $op != ${3:-} ]]
     then
-        echo "FAIL: Expected '$3', Actual '$op', Arg1 '$1', Arg2 '$2'"
+        echo "FAIL: Expected '${3:-}', Actual '$op', Arg1 '${1:-}', Arg2 '${2:-}'"
     else
-        echo "Pass: '$1 $op $2'"
+        echo "Pass: '${1:-} $op ${2:-}'"
     fi
 }

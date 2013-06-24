@@ -15,9 +15,9 @@ declare -a red=("\033[31m" "\033[39m");
 declare -a yellow=("\033[33m" "\033[39m");
 
 cWrap(){
-    echo -en "$(eval "echo \${$1[0]}")"
+    echo -en "$(eval "echo \${${1:-}[0]}")"
     cat -;
-    echo -en "$(eval "echo \${$1[1]}")"
+    echo -en "$(eval "echo \${${1:-}[1]}")"
 }
 
 black(){
