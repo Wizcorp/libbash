@@ -74,7 +74,7 @@ echoOk(){
 }
 
 echoQuestion(){
-    retStore=$1;
+    retStore=${1:-};
     shift;
     echoSpacing;
     query $retStore $(echo "？ $@" | magenta | bold)
@@ -82,20 +82,20 @@ echoQuestion(){
 
 echoQuestionHide(){
     echoSpacing;
-    retStore=$1;
+    retStore=${1:-};
     shift;
     queryStared $retStore $(echo "？ $@" | magenta | bold)
 }
 
 echoPadded() {
-    padding=$(( $1 - ${#2} ));
-    echo -n $2;
+    padding=$(( ${1:-} - ${#2} ));
+    echo -n ${2:-};
     for i in $(seq 1 $padding); do echo -n " "; done
 }
 
 setup(){
 
-    label="$1"
+    label="${1:-}"
     cmd=("${@:2:$(($#-2))}");
     errorMsg="${@:2:$(($#-2))}";
     cmdStr="";
@@ -105,8 +105,8 @@ setup(){
     #
     # Escaping of values which contain spaces
     #
-    while [ "${cmd[$cmdIncr]}" != "" ]; do
-        case "${cmd[$cmdIncr]}" in
+    while [ "${cmd[$cmdIncr]:-}" != "" ]; do
+        case "${cmd[$cmdIncr]:-}" in
              *\ * )
                    cmd[$cmdIncr]="\"${cmd[$cmdIncr]}\"";
                    ;;
@@ -121,8 +121,8 @@ setup(){
     #
     # Capture pipes
     #
-    errorPipe=/tmp/$cmdId-errors
-    errorCodePipe=/tmp/$cmdId-code
+    errorPipe=/tmp/${cmdId}-errors
+    errorCodePipe=/tmp/${cmdId}-code
 
     touch $errorPipe;
     touch $errorCodePipe;
@@ -133,7 +133,7 @@ setup(){
     #
     # Execution and information gathering (pid, error code, logs)
     #
-    (eval "$cmdStr" > /dev/null 2> $errorPipe; echo $? > $errorCodePipe) &
+    (set +o errexit; eval "$cmdStr" > /dev/null 2> $errorPipe; echo $? > $errorCodePipe) &
     spinner $!
     spinRet=$?
     cmdRet=0;
@@ -163,7 +163,7 @@ run(){
     #
     # Command variables
     #
-    label="$1"
+    label="${1:-}"
     cmd=("${@:2:$(($#-1))}");
     cmdStr="";
     cmdIncr=0;
@@ -204,7 +204,7 @@ run(){
     #
     # Execution and information gathering (pid, error code, logs)
     #
-    (eval "$cmdStr" > /dev/null 2> $errorPipe; echo $? > $errorCodePipe) &
+    (set +o errexit; eval "$cmdStr" > /dev/null 2> $errorPipe; echo $? > $errorCodePipe) &
     spinner $!
     spinRet=$?
     cmdRet=0;

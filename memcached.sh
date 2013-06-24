@@ -14,27 +14,27 @@ mbGet(){
 }
 
 mbDel(){
-    key=$(mbGetKey $1)
+    key=$(mbGetKey ${1:-})
     mbQuery "delete $key"
 }
 
 mbTouch(){
-    key=$(mbGetKey $1)
+    key=$(mbGetKey ${1:-})
     OPTIND=2;
     mbGetOpts $@;
     mbQuery "touch $key $TTL"
 }
 
 mbIncr(){
-    key=$(mbGetKey $1)
-    value=$2
+    key=$(mbGetKey ${1:-})
+    value=${2:-}
 
     mbQuery "incr $key $value"
 }
 
 mbDecr(){
-    key=$(mbGetKey $1)
-    value=$2
+    key=$(mbGetKey ${1:-})
+    value=${2:-}
 
     mbQuery "decr $key $value"
 }
@@ -63,22 +63,22 @@ mbDataCommand(){
 
     # Options
 
-    command=$1;
-    key=$(mbGetKey $2 | sed "s/ $//")
-    value="$3"
+    command=${1:-};
+    key=$(mbGetKey ${2:-} | sed "s/ $//")
+    value="${3:-}"
     dataFile="/tmp/mbCommand_$(uuidgen)";
 
-    if [ "$3" == "" -o "$(echo $3 | grep "^-")" != "" ]; then
+    if [ "${3:-}" == "" -o "$(echo ${3:-} | grep "^-")" != "" ]; then
         OPTIND=3;
         cat - > $dataFile;
     else
         OPTIND=4;
-        echo -n $3 > $dataFile;
+        echo -n ${3:-} > $dataFile;
     fi
 
     mbGetOpts $@;
 
-    if [ "$3" == "$(cat $dataFile)" ]; then
+    if [ "${3:-}" == "$(cat $dataFile)" ]; then
         len=$(($(cat $dataFile | wc -c)))
     elif [ "$(grep  $dataFile)" == "" ]; then
         len=$(($(cat $dataFile | wc -c)-1))
@@ -140,7 +140,7 @@ mbQuery(){
 
 mbBuildQuery(){
 
-  echo -en "$1\r\n";
+  echo -en "${1:-}\r\n";
 
   if [ "$dataFile" != "" ]; then
       if [ -f $dataFile ]; then

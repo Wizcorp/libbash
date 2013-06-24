@@ -20,7 +20,7 @@
 
 . /usr/lib/bash/bashr.sh
 
-dst=$1;
+dst=${1:-};
 
 if [ "$dst" == "" ]; then
     dst="localGit"
